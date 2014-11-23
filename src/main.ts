@@ -5,14 +5,12 @@ var validEmail = function (val:string) {
     return re.test(val);
 };
 
-var Is = jumpkick.Is;
-
 var foo = {bar: "bar"};
-new Is(foo.bar)
-    .is("length>2")
-    .not().equals("bar2")
-    .isShorterThan(4)
-    .isLongerThan(2)
+Is(foo.bar)
+    .matching("length>2")
+    .not.equalTo("bar2")
+    .shorterThan(4)
+    .longerThan(2)
     .then(()=> {
         console.log("end of the chain, all is well");
     })
@@ -21,45 +19,46 @@ new Is(foo.bar)
     });
 
 
-new Is("john.doe@fakeemail.com")
-    .is(validEmail).then(()=> {
+Is("john.doe@fakeemail.com")
+    .matching(validEmail).then(()=> {
         console.log("this is a valid email");
     });
 
-new Is("john.doe.fakeemail.com")
-    .is(validEmail).then(()=> {
+Is("john.doe.fakeemail.com")
+    .matching(validEmail).then(()=> {
         console.log("this is a valid email");
     }).catch(()=> {
         console.log("nope, bad email");
     });
 
-new Is(1)
-    .isLessThan(4)
+Is(1)
+    .lessThan(4)
     .then(()=> {
         console.log("<4");
     })
-    .is(">0")
+    .matching(">0")
     .then(()=> {
         console.log(">0");
     })
-    .is("<1")
+    .matching("<1")
     .then(()=> {
         console.log("it is less than 4");
     }).catch(()=> {
         console.log("do nothing");
     });
 
-new Is("foo").then(()=> {
+Is("foo").then(()=> {
     console.log("it is not null");
 }).catch(()=> {
     console.log("is  null");
 });
 
-new Is("foo") .any("length<4)","length>10").then(()=>{
+Is("foo").matchingAny("length<4)","length>10").then(()=>{
     console.log("or works");
+
 });
 
-new Is(undefined).
+Is(undefined).
     then(()=> {
         console.log("it is not null");
     })
@@ -67,8 +66,8 @@ new Is(undefined).
         console.log("is  null");
     });
 
-new Is("john.doe@fakeemail.com")
-    .not().any(validEmail, "foo")
+Is("john.doe@fakeemail.com")
+    .not.matchingAny(validEmail, "foo")
     .then(()=> {
         console.log("it is a valid email or it is 'foo'");
     })
@@ -80,6 +79,14 @@ var validObject=function(obj){
   return (obj.foo&&obj.foo.length>0)&& (obj.bar&&obj.bar.length<4);
 };
 
-new Is({foo:"foo",bar:"bar"}).is(validObject).then(()=>{
+Is({foo:"foo",bar:"bar"}).matching(validObject).then(()=>{
     console.log("valid object");
+})
+
+Is({foo:"foo",bar:"bar"}).prop("foo").equalTo("foo").then(()=>{
+    console.log("valid foo");
+})
+
+Is("aaa").a.not.numeric().then(()=>{
+    console.log("a prop");
 })
